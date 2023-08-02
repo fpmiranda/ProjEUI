@@ -7,6 +7,7 @@ import {defaultData} from '../data/datafile';
 import {FIRESTORE_DB} from '../data/firebaseConfig';
 
 import {HeaderImg} from '../components/HeaderImg';
+import {StyledButton} from '../components/StyledButton';
 
 export function ModuleScreen({navigation, route}) {
   const {id, nome, diasPlantado, umidadeAgora} = route.params.data;
@@ -15,7 +16,7 @@ export function ModuleScreen({navigation, route}) {
   const [selectedItem, setSelectedItem] = useState(defaultData[index]);
   const [isEditable, setIsEditable] = useState(false);
 
-  const ref = doc(FIRESTORE_DB, `A8:42:E3:48:A2:98/${id}`);
+  const ref = doc(FIRESTORE_DB, `user01/${id}`);
 
   const updateModule = async () => {
     updateDoc(ref, {
@@ -56,9 +57,12 @@ export function ModuleScreen({navigation, route}) {
             })}
           </Picker>
           {isEditable == false ? (
-            <Button title={'Editar'} onPress={() => setIsEditable(true)} />
+            <StyledButton
+              title={'Editar'}
+              onPress={() => setIsEditable(true)}
+            />
           ) : (
-            <Button
+            <StyledButton
               title={'Salvar'}
               onPress={() => {
                 setIsEditable(false);
@@ -103,6 +107,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
     alignSelf: 'center',
     color: 'rgb(90,90,90)',
+    elevation: 5,
+    borderRadius: 5,
   },
   info: {
     width: 380,
