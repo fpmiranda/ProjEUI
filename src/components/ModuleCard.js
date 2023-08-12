@@ -12,6 +12,11 @@ export function ModuleCard(props) {
     return obj.planta == props.data.nome;
   });
 
+  let timestamp = new Object(props.data.diaPlantio);
+  const diasPlantado = Math.ceil(
+    (new Date().getTime() - timestamp.seconds * 1000) / 86400000,
+  );
+
   const image = cover[0].capa;
 
   return (
@@ -33,10 +38,11 @@ export function ModuleCard(props) {
                 </View>
                 <View>
                   <Text style={styles.body}>
-                    Umidade: {props.data.umidadeMin}%
+                    Umidade: {props.data.umidadeAgora}%
                   </Text>
                   <Text style={styles.body}>
-                    Dias Plantado: {props.data.diasPlantado} dias
+                    Dias Plantado: {!props.data.diaPlantio ? '0' : diasPlantado}{' '}
+                    {diasPlantado == '1' ? 'dia' : 'dias'}
                   </Text>
                 </View>
               </View>

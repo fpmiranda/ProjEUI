@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {Picker} from '@react-native-picker/picker';
 import {Text, View, StyleSheet, ScrollView, Button} from 'react-native';
-import {doc, updateDoc} from 'firebase/firestore';
+import {doc, updateDoc, Timestamp} from 'firebase/firestore';
 
 import {defaultData} from '../data/datafile';
 import {FIRESTORE_DB} from '../data/firebaseConfig';
@@ -10,7 +10,7 @@ import {HeaderImg} from '../components/HeaderImg';
 import {StyledButton} from '../components/StyledButton';
 
 export function ModuleScreen({navigation, route}) {
-  const {id, nome, diasPlantado, umidadeAgora} = route.params.data;
+  const {id, nome, umidadeAgora, diaPlantio} = route.params.data;
   const index = defaultData.findIndex(x => x.planta == nome);
 
   const [selectedItem, setSelectedItem] = useState(defaultData[index]);
@@ -18,10 +18,16 @@ export function ModuleScreen({navigation, route}) {
 
   const ref = doc(FIRESTORE_DB, `user01/${id}`);
 
+  let timestamp = new Object(diaPlantio);
+  const diasPlantado = Math.ceil(
+    (new Date().getTime() - timestamp.seconds * 1000) / 86400000,
+  );
+
   const updateModule = async () => {
     updateDoc(ref, {
       nome: selectedItem.planta,
       umidadeMin: selectedItem.umidadeMin,
+      diaPlantio: Timestamp.now(),
     });
     navigation.setOptions({
       headerTitle:
@@ -42,6 +48,7 @@ export function ModuleScreen({navigation, route}) {
             selectedValue={selectedItem.planta}
             onValueChange={(itemValue, itemIndex) => {
               setSelectedItem(defaultData[itemIndex]);
+              console.log(itemIndex);
             }}>
             {defaultData.map(item => {
               return (
@@ -81,7 +88,8 @@ export function ModuleScreen({navigation, route}) {
           </View>
           <View style={styles.infoTextBox}>
             <Text style={styles.infoText}>
-              Dias plantado: {diasPlantado} dias
+              Dias plantado: {!diaPlantio ? '0' : diasPlantado}{' '}
+              {diasPlantado == '1' ? 'dia' : 'dias'}
             </Text>
           </View>
         </View>
